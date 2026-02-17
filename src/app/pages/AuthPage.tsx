@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '@/app/components/ui/button';
-import { Input } from '@/app/components/ui/input';
-import { Label } from '@/app/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/app/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/components/ui/card';
+import { Link, useNavigate } from 'react-router-dom';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { BrainCircuit, User, Briefcase, Building2 } from 'lucide-react';
 
 export default function AuthPage() {
@@ -121,6 +121,26 @@ export default function AuthPage() {
                     </div>
                   </div>
 
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <input
+                        id="remember"
+                        type="checkbox"
+                        className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                      />
+                      <Label htmlFor="remember" className="text-sm text-gray-600">
+                        Remember me
+                      </Label>
+                    </div>
+
+                    <Link
+                      to="/forgot-password"
+                      className="text-sm text-indigo-600 hover:underline"
+                    >
+                      Forgot your password?
+                    </Link>
+                  </div>
                   <Button type="submit" className="w-full">
                     Sign In
                   </Button>
