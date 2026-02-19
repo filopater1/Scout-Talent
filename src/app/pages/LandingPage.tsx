@@ -1,10 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/app/components/ui/button';
+import { Button } from '../components/ui/button';
 import { 
-  BrainCircuit, 
-  CheckCircle, 
+  BrainCircuit,  
   Shield, 
-  TrendingUp, 
   Users, 
   BarChart3,
   Sparkles,
@@ -24,7 +22,7 @@ export default function LandingPage() {
             <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
               <BrainCircuit className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-bold text-gray-900">Scout Talent</span>
+            <span className="text-2xl font-bold text-gray-900">Hakeem</span>
           </div>
           <Button onClick={() => navigate('/auth')}>
             Get Started
@@ -115,7 +113,7 @@ export default function LandingPage() {
         <div className="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-3xl p-12 text-center text-white">
           <h2 className="text-4xl font-bold mb-4">Ready to Transform Your Hiring?</h2>
           <p className="text-xl opacity-90 mb-8">
-            Join hundreds of companies using Scout Talent for smarter recruitment
+            Join hundreds of companies using Hakeem for smarter recruitment
           </p>
           <Button 
             size="lg" 
@@ -130,7 +128,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t bg-white">
         <div className="max-w-7xl mx-auto px-6 py-8 text-center text-gray-600">
-          <p>© 2026 Scout Talent. All rights reserved.</p>
+          <p>© 2026 Hakeem. All rights reserved.</p>
         </div>
       </footer>
     </div>

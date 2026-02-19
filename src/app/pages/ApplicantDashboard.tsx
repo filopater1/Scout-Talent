@@ -17,6 +17,7 @@ import {
   Clock,
   TrendingUp,
   AlertCircle,
+  User,
 } from "lucide-react";
 
 export default function ApplicantDashboard() {
@@ -32,18 +33,17 @@ export default function ApplicantDashboard() {
             <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
               <BrainCircuit className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-bold text-gray-900">
-              Scout Talent
-            </span>
+            <span className="text-2xl font-bold text-gray-900">Hakeem</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className=" flex items-center gap-2    ">
             <span
               onClick={() => navigate("/applicant/profile")}
-              className="text-sm  px-4 py-2 bg-indigo-100 rounded-full cursor-pointer  text-gray-600"
+              className="text-sm flex items-center   px-4 py-2 bg-indigo-100 rounded-full cursor-pointer  text-gray-600"
             >
-              John Doe
+              <User className="w-4 h-4 mr-1" />
+              Profile
             </span>
-            <Button variant="outline" onClick={() => navigate("/")}>
+            <Button variant="outline"  onClick={() => navigate("/")}>
               Logout
             </Button>
           </div>
@@ -197,15 +197,18 @@ export default function ApplicantDashboard() {
         {/* Applications List */}
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>My Applications</CardTitle>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex-1">
+                <CardTitle className="mb-2" >My Applications</CardTitle>
                 <CardDescription>
                   Track the status of your job applications
                 </CardDescription>
               </div>
-              <Button onClick={() => navigate("/jobs")}>
-                Apply to New Job
+              <Button
+                className="cursor-pointer"
+                onClick={() => navigate("/jobs")}
+              >
+                Explore New Jobs
               </Button>
             </div>
           </CardHeader>
@@ -261,11 +264,12 @@ export default function ApplicantDashboard() {
                       onClick={() => navigate(`/jobs/${app.id}`)}
                       variant="outline"
                       size="sm"
+                      className="cursor-pointer "
                     >
                       View Details
                     </Button>
-                    {app.status === "Interview Scheduled" && (
-                      <Button size="sm" variant="default">
+                    {app.status === "Interview" && (
+                      <Button size="sm" className="bg-green-500 hover:bg-green-600 text-white cursor-pointer" variant="default">
                         Join Interview
                       </Button>
                     )}
@@ -282,8 +286,8 @@ export default function ApplicantDashboard() {
 
 function getStatusColor(status: string) {
   switch (status) {
-    case "Interview Scheduled":
-      return "bg-green-100 text-green-800 border-green-200";
+    case "Interview":
+      return "bg-green-100 text-green-800 border-green-200 ";
     case "Under Review":
       return "bg-blue-100 text-blue-800 border-blue-200";
     case "Rejected":
@@ -317,7 +321,7 @@ const applications = [
     id: 1,
     position: "Senior Software Engineer",
     company: "TechCorp Inc.",
-    status: "Interview Scheduled",
+    status: "Interview",
     appliedDate: "Jan 10, 2026",
     matchScore: 92,
     location: "Remote",

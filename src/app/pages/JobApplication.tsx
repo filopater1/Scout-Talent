@@ -85,7 +85,7 @@ export default function JobApplication() {
               <BrainCircuit className="w-6 h-6 text-white" />
             </div>
             <span className="text-2xl font-bold text-gray-900">
-              Scout Talent
+              Hakeem
             </span>
           </div>
           <Button variant="ghost" onClick={() => navigate("/applicant")}>
@@ -112,40 +112,46 @@ export default function JobApplication() {
           <>
             {/* Job Details */}
             {step === 1 && (
-              <Card>
+              <Card className="w-full max-w-3xl mx-auto">
                 <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="text-2xl mb-2">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex-1">
+                      <CardTitle className="text-xl sm:text-2xl mb-2">
                         Senior Software Engineer
                       </CardTitle>
-                      <div className="flex items-center gap-4 text-gray-600">
+
+                      <div className="grid grid-cols-1 gap-2 text-gray-600 sm:flex sm:flex-wrap sm:items-center sm:gap-4">
                         <div className="flex items-center gap-1">
-                          <Building2 className="w-4 h-4" />
+                          <Building2 className="w-4 h-4 shrink-0" />
                           <span>TechCorp Inc.</span>
                         </div>
+
                         <div className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
+                          <MapPin className="w-4 h-4 shrink-0" />
                           <span>Remote</span>
                         </div>
+
                         <div className="flex items-center gap-1">
-                          <DollarSign className="w-4 h-4" />
+                          <DollarSign className="w-4 h-4 shrink-0" />
                           <span>$120k - $180k</span>
                         </div>
+
                         <div className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
+                          <Clock className="w-4 h-4 shrink-0" />
                           <span>Full-time</span>
                         </div>
                       </div>
                     </div>
-                    <Badge className="bg-green-100 text-green-800">
+
+                    <Badge className="bg-green-100 text-green-800 self-start sm:self-auto">
                       Actively Hiring
                     </Badge>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-6">
+
+                <CardContent className="space-y-6 p-4 sm:p-6">
                   <div>
-                    <h3 className="font-semibold text-lg mb-2">
+                    <h3 className="font-semibold text-base sm:text-lg mb-2">
                       About the Role
                     </h3>
                     <p className="text-gray-600 leading-relaxed">
@@ -158,7 +164,8 @@ export default function JobApplication() {
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-lg mb-2">
+                    <h3 className="font-semibold text-base sm:text-lg mb-2">
+
                       Required Skills
                     </h3>
                     <div className="flex flex-wrap gap-2">
@@ -178,7 +185,9 @@ export default function JobApplication() {
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-lg mb-2">
+                   <h3 className="font-semibold text-base sm:text-lg mb-2">
+
+
                       Responsibilities
                     </h3>
                     <ul className="space-y-2 text-gray-600">

@@ -67,7 +67,7 @@ export default function ResetPasswordPage() {
               <BrainCircuit className="w-7 h-7 text-white" />
             </div>
             <span className="text-3xl font-bold text-gray-900">
-              Scout Talent
+              Hakeem
             </span>
           </div>
         </div>

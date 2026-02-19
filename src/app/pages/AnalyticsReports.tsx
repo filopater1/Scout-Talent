@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/app/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
-import { Badge } from '@/app/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/app/components/ui/tabs';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Badge } from '../components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { 
   BrainCircuit, 
   TrendingUp, 
@@ -43,16 +43,16 @@ export default function AnalyticsReports() {
             <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
               <BrainCircuit className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-bold text-gray-900">Scout Talent</span>
+            <span className="text-2xl font-bold text-gray-900">Hakeem</span>
           </div>
           <div className="flex items-center gap-4">
-            <Button variant="outline">
+            {/* <Button variant="outline">
               <Download className="w-4 h-4 mr-2" />
               Export Report
             </Button>
             <Button variant="outline" onClick={() => navigate('/recruiter')}>
               Back to Dashboard
-            </Button>
+            </Button> */}
             <Button variant="outline" onClick={() => navigate('/')}>
               Logout
             </Button>

@@ -13,6 +13,8 @@ import JobDetails from "./pages/JobDetails";
 import ApplicantProfile from "./pages/ApplicantProfile";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import MyJobsPage from "./pages/MyJobsPage";
+import RecruiterProfile from "./pages/RecruiterProfile";
 
 export default function App() {
   return (
@@ -24,6 +26,7 @@ export default function App() {
           <Route path="/verify" element={<VerifyPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/my-posts" element={<MyJobsPage />} />
 
           <Route path="/applicant" element={<ApplicantDashboard />} />
           <Route path="/recruiter" element={<RecruiterDashboard />} />
@@ -31,6 +34,7 @@ export default function App() {
           <Route path="/jobs/:jobId/apply" element={<JobApplication />} />
           <Route path="/jobs/:jobId" element={<JobDetails />} />
           <Route path="/applicant/profile" element={<ApplicantProfile />} />
+          <Route path="/recruiter/profile" element={<RecruiterProfile />} />
           <Route
             path="/evaluate/:candidateId"
             element={<CandidateEvaluation />}

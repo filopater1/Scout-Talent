@@ -167,7 +167,7 @@ export default function ApplicantProfile() {
           <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
             <BrainCircuit className="w-6 h-6 text-white" />
           </div>
-          <span className="text-2xl font-bold text-gray-900">Scout Talent</span>
+          <span className="text-2xl font-bold text-gray-900">Hakeem</span>
         </div>
       </header>
 
