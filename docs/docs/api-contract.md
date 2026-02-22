@@ -1,4 +1,3 @@
-
 # Frontend & Backend API Requirements — Full Documentation
 
 ---
@@ -1198,3 +1197,256 @@ GET /api/recruiter/ai-insight
   "recommendations": "Focus on sourcing more frontend engineers"
 }
 ```
+
+---
+
+# 🔐 Authentication API Contract
+
+Base URL:
+
+```
+/api/v1/auth
+```
+
+---
+
+# 1️⃣ Login API
+
+## Endpoint
+
+```
+POST /api/v1/auth/login
+```
+
+## Description
+
+Authenticate user based on email, password, and role.
+
+---
+
+## Request Body
+
+```json
+{
+  "email": "string",
+  "password": "string",
+  "role": "applicant | recruiter | hr",
+  "rememberMe": "boolean"
+}
+```
+
+---
+
+## Fields Definition
+
+| Field      | Type    | Required | Nullable | Notes                                   |
+| ---------- | ------- | -------- | -------- | --------------------------------------- |
+| email      | string  | ✅ Yes   | ❌ No    | Must be valid email format              |
+| password   | string  | ✅ Yes   | ❌ No    | Min 6 characters                        |
+| role       | string  | ✅ Yes   | ❌ No    | Enum:`applicant`,`recruiter`,`hr` |
+| rememberMe | boolean | ❌ No    | ❌ No    | Default: false                          |
+
+---
+
+## Success Response (200)
+
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "data": {
+    "accessToken": "jwt-token",
+    "refreshToken": "refresh-token",
+    "user": {
+      "id": "uuid",
+      "fullName": "John Doe",
+      "email": "john@example.com",
+      "role": "applicant"
+    }
+  }
+}
+```
+
+---
+
+## Error Responses
+
+### 401 – Invalid Credentials
+
+```json
+{
+  "success": false,
+  "message": "Invalid email or password"
+}
+```
+
+---
+
+---
+
+# 2️⃣ Register (Sign Up) API
+
+## Endpoint
+
+```
+POST /api/v1/auth/register
+```
+
+## Description
+
+Create a new user account based on selected role.
+
+---
+
+## Request Body
+
+```json
+{
+  "fullName": "string",
+  "email": "string",
+  "password": "string",
+  "confirmPassword": "string",
+  "phone": "string",
+  "role": "applicant | recruiter | hr",
+  "jobTitle": "string",
+  "location": "string",
+  "linkedinUrl": "string",
+  "companyName": "string"
+}
+```
+
+---
+
+# 🧠 Field Rules (Important)
+
+## ✅ Required For ALL Roles
+
+| Field           | Type   | Required | Nullable | Notes                      |
+| --------------- | ------ | -------- | -------- | -------------------------- |
+| fullName        | string | ✅ Yes   | ❌ No    | Min 3 characters           |
+| email           | string | ✅ Yes   | ❌ No    | Unique, valid format       |
+| password        | string | ✅ Yes   | ❌ No    | Min 6 characters           |
+| confirmPassword | string | ✅ Yes   | ❌ No    | Must match password        |
+| phone           | string | ✅ Yes   | ❌ No    | Valid phone format         |
+| role            | enum   | ✅ Yes   | ❌ No    | applicant / recruiter / hr |
+| jobTitle        | string | ✅ Yes   | ❌ No    | Required for all roles     |
+| location        | string | ✅ Yes   | ❌ No    | Required for all roles     |
+
+---
+
+## 🟢 Required Only For Applicant
+
+| Field       | Required | Nullable |
+| ----------- | -------- | -------- |
+| linkedinUrl | ❌ No    | ✅ Yes   |
+
+* Optional
+* Can be null
+* If provided → must be valid URL
+
+---
+
+## 🟣 Required For Recruiter & HR
+
+| Field       | Required | Nullable |
+| ----------- | -------- | -------- |
+| companyName | ✅ Yes   | ❌ No    |
+
+---
+
+# 🔍 Validation Logic
+
+### Password Rules
+
+* Minimum 6 characters
+* Must match confirmPassword
+
+### Email Rules
+
+* Must be unique in database
+
+### Role-Based Validation
+
+Pseudo logic:
+
+```ts
+if (role === "applicant") {
+  companyName = null
+}
+
+if (role === "recruiter" || role === "hr") {
+  linkedinUrl = null
+  companyName is required
+}
+```
+
+---
+
+# ✅ Success Response (201)
+
+```json
+{
+  "success": true,
+  "message": "Account created successfully",
+  "data": {
+    "id": "uuid",
+    "fullName": "John Doe",
+    "email": "john@example.com",
+    "role": "applicant"
+  }
+}
+```
+
+---
+
+# ❌ Possible Error Responses
+
+### 400 – Validation Error
+
+```json
+{
+  "success": false,
+  "message": "Validation error",
+  "errors": {
+    "email": "Email already exists",
+    "password": "Password must be at least 6 characters"
+  }
+}
+```
+
+---
+
+# 🧩 Database Nullable Summary
+
+### In Database Schema
+
+| Field       | Nullable                                         |
+| ----------- | ------------------------------------------------ |
+| linkedinUrl | ✅ Yes                                           |
+| companyName | ✅ Yes (but required for recruiter/hr logically) |
+| phone       | ❌ No                                            |
+| jobTitle    | ❌ No                                            |
+| location    | ❌ No                                            |
+
+---
+
+# 🎯 Clean Professional Version Summary
+
+### Required Always
+
+* fullName
+* email
+* password
+* confirmPassword
+* phone
+* role
+* jobTitle
+* location
+
+### Required Only For Recruiter/HR
+
+* companyName
+
+### Optional
+
+* linkedinUrl (Applicant only)

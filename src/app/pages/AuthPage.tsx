@@ -229,8 +229,6 @@ export default function AuthPage() {
                     />
                   </div>
 
-                  {selectedRole === "applicant" && (
-                    <>
                       <div className="space-y-2">
                         <Label htmlFor="jobTitle">Job Title</Label>
                         <Input
@@ -250,6 +248,8 @@ export default function AuthPage() {
                           onChange={handleChange}
                         />
                       </div>
+                  {selectedRole === "applicant" && (
+                    <>
 
                       <div className="space-y-2">
                         <Label htmlFor="linkedinUrl">LinkedIn Profile</Label>
