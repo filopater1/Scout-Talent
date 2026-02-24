@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "../components/ui/card";
 import { Button } from "../components/ui/button";
@@ -8,98 +8,145 @@ import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { BrainCircuit } from "lucide-react";
 
+/* ================= ENUMS ================= */
+
+enum JobType {
+  FULL_TIME = "Full_Time",
+  PART_TIME = "Part_Time",
+  CONTRACT = "Contract",
+  FREELANCE = "Freelance",
+  INTERNSHIP = "Internship",
+  TEMPORARY = "Temporary",
+}
+
+enum WorkMode {
+  ONSITE = "Onsite",
+  REMOTE = "Remote",
+  HYBRID = "Hybrid",
+}
+
+enum JobStatus {
+  DRAFT = "Draft",
+  PUBLISHED = "Published",
+  CLOSED = "Closed",
+  PAUSED = "Paused",
+  EXPIRED = "Expired",
+  FILLED = "Filled",
+}
+
+/* ================= TYPES ================= */
+
 type Job = {
   id: number;
   title: string;
   company: string;
   location: string;
-  salary: string;
-  type: string;
-  status: string;
+  salaryMin: number | "";
+  salaryMax: number | "";
+  type: JobType | "";
+  workMode: WorkMode | "";
+  status: JobStatus;
   description: string;
   skills: string[];
   responsibilities: string[];
   requirements: string[];
 };
 
+type TabType = "ALL" | JobStatus;
+
+/* ================= COMPONENT ================= */
+
 export default function MyJobPosts() {
   const navigate = useNavigate();
 
-  const [jobs, setJobs] = useState<Job[]>([
-    {
-      id: 1,
-      title: "Senior Software Engineer",
-      company: "TechCorp Inc.",
-      location: "Remote",
-      salary: "$120k - $180k",
-      type: "Full-time",
-      status: "Actively Hiring",
-      description: `We're looking for an experienced Software Engineer to join our growing team.`,
-      skills: ["React", "Node.js", "TypeScript"],
-      responsibilities: ["Design scalable web apps", "Collaborate with teams"],
-      requirements: ["5+ years experience", "Strong JS knowledge"],
-    },
-    {
-      id: 2,
-      title: "Senior Software Engineer",
-      company: "TechCorp Inc.",
-      location: "Remote",
-      salary: "$120k - $180k",
-      type: "Full-time",
-      status: "Actively Hiring",
-      description: `We're looking for an experienced Software Engineer to join our growing team.`,
-      skills: ["React", "Node.js", "TypeScript"],
-      responsibilities: ["Design scalable web apps", "Collaborate with teams"],
-      requirements: ["5+ years experience", "Strong JS knowledge"],
-    },
-  ]);
+  /* ================= STATE ================= */
+
+  const [activeTab, setActiveTab] = useState<TabType>("ALL");
+
+  const [jobs, setJobs] = useState<Job[]>([]);
 
   const [editingJob, setEditingJob] = useState<Job | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  const emptyJob: Job = {
+  /* ================= HELPERS ================= */
+
+  const createEmptyJob = (): Job => ({
     id: Date.now(),
     title: "",
     company: "",
     location: "",
-    salary: "",
+    salaryMin: "",
+    salaryMax: "",
     type: "",
-    status: "",
+    workMode: "",
+    status: JobStatus.DRAFT, // ⭐ مهم
     description: "",
     skills: [],
     responsibilities: [],
     requirements: [],
-  };
+  });
 
-  const [formData, setFormData] = useState<Job>(emptyJob);
+  const [formData, setFormData] = useState<Job>(createEmptyJob());
 
-  // Add or Update Job
-  const handleSubmit = () => {
+  const filteredJobs = useMemo(() => {
+    if (activeTab === "ALL") return jobs;
+    return jobs.filter((j) => j.status === activeTab);
+  }, [jobs, activeTab]);
+
+  /* ================= VALIDATION ================= */
+
+  const isSalaryValid =
+    formData.salaryMin !== "" &&
+    formData.salaryMax !== "" &&
+    Number(formData.salaryMax) >= Number(formData.salaryMin);
+
+  /* ================= CRUD ================= */
+
+  const handleSubmit = (statusOverride?: JobStatus) => {
+    if (!isSalaryValid) {
+      alert("Max salary must be greater than or equal to min salary");
+      return;
+    }
+
+    const payload: Job = {
+      ...formData,
+      status: statusOverride ?? formData.status,
+    };
+
     if (editingJob) {
-      setJobs(jobs.map((j) => (j.id === editingJob.id ? formData : j)));
+      setJobs((prev) =>
+        prev.map((j) => (j.id === editingJob.id ? payload : j)),
+      );
     } else {
-      setJobs([...jobs, formData]);
+      setJobs((prev) => [...prev, payload]);
     }
 
     setShowForm(false);
     setEditingJob(null);
-    setFormData(emptyJob);
+    setFormData(createEmptyJob());
   };
 
-  // Delete
   const handleDelete = (id: number) => {
-    setJobs(jobs.filter((job) => job.id !== id));
+    setJobs((prev) => prev.filter((job) => job.id !== id));
   };
 
-  // Edit
   const handleEdit = (job: Job) => {
     setEditingJob(job);
     setFormData(job);
     setShowForm(true);
   };
 
+  /* ================= STATUS ACTIONS ================= */
+
+  const updateStatus = (id: number, status: JobStatus) => {
+    setJobs((prev) => prev.map((j) => (j.id === id ? { ...j, status } : j)));
+  };
+
+  /* ================= UI ================= */
+
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* ================= HEADER ================= */}
       <header className="border-b bg-white">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
@@ -114,12 +161,28 @@ export default function MyJobPosts() {
           </Button>
         </div>
       </header>
+
       <div className="p-6 max-w-6xl mx-auto">
+        {/* ================= TABS ================= */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          {["ALL", ...Object.values(JobStatus)].map((tab) => (
+            <Button
+              key={tab}
+              variant={activeTab === tab ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveTab(tab as TabType)}
+            >
+              {tab}
+            </Button>
+          ))}
+        </div>
+
+        {/* ================= ADD BUTTON ================= */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">My Job Posts</h2>
           <Button
             onClick={() => {
-              setFormData(emptyJob);
+              setFormData(createEmptyJob());
               setEditingJob(null);
               setShowForm(true);
             }}
@@ -156,29 +219,69 @@ export default function MyJobPosts() {
                 }
               />
 
-              <Input
-                placeholder="Salary"
-                value={formData.salary}
-                onChange={(e) =>
-                  setFormData({ ...formData, salary: e.target.value })
-                }
-              />
+              {/* Salary */}
+              <div className="grid grid-cols-2 gap-3">
+                <Input
+                  type="number"
+                  placeholder="Min Salary"
+                  value={formData.salaryMin}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      salaryMin: Number(e.target.value),
+                    })
+                  }
+                />
+                <Input
+                  type="number"
+                  placeholder="Max Salary"
+                  value={formData.salaryMax}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      salaryMax: Number(e.target.value),
+                    })
+                  }
+                />
+              </div>
 
-              <Input
-                placeholder="Job Type"
+              {/* Job Type */}
+              <select
+                className="w-full border rounded-md p-2"
                 value={formData.type}
                 onChange={(e) =>
-                  setFormData({ ...formData, type: e.target.value })
+                  setFormData({
+                    ...formData,
+                    type: e.target.value as JobType,
+                  })
                 }
-              />
+              >
+                <option value="">Select Job Type</option>
+                {Object.values(JobType).map((type) => (
+                  <option key={type} value={type}>
+                    {type.replace("_", " ")}
+                  </option>
+                ))}
+              </select>
 
-              <Input
-                placeholder="Status"
-                value={formData.status}
+              {/* Work Mode */}
+              <select
+                className="w-full border rounded-md p-2"
+                value={formData.workMode}
                 onChange={(e) =>
-                  setFormData({ ...formData, status: e.target.value })
+                  setFormData({
+                    ...formData,
+                    workMode: e.target.value as WorkMode,
+                  })
                 }
-              />
+              >
+                <option value="">Select Work Mode</option>
+                {Object.values(WorkMode).map((mode) => (
+                  <option key={mode} value={mode}>
+                    {mode}
+                  </option>
+                ))}
+              </select>
 
               <Textarea
                 placeholder="Description"
@@ -188,42 +291,19 @@ export default function MyJobPosts() {
                 }
               />
 
-              <Input
-                placeholder="Skills (comma separated)"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    skills: e.target.value.split(","),
-                  })
-                }
-              />
-
-              <Input
-                placeholder="Responsibilities (comma separated)"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    responsibilities: e.target.value.split(","),
-                  })
-                }
-              />
-
-              <Input
-                placeholder="Requirements (comma separated)"
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    requirements: e.target.value.split(","),
-                  })
-                }
-              />
-
               <div className="flex gap-3">
-                <Button onClick={handleSubmit}>
-                  {editingJob ? "Update Job" : "Create Job"}
+                <Button
+                  variant="outline"
+                  onClick={() => handleSubmit(JobStatus.DRAFT)}
+                >
+                  Save Draft
                 </Button>
 
-                <Button variant="outline" onClick={() => setShowForm(false)}>
+                <Button onClick={() => handleSubmit(JobStatus.PUBLISHED)}>
+                  Publish Now
+                </Button>
+
+                <Button variant="ghost" onClick={() => setShowForm(false)}>
                   Cancel
                 </Button>
               </div>
@@ -233,32 +313,27 @@ export default function MyJobPosts() {
 
         {/* ================= JOB LIST ================= */}
         <div className="grid gap-6">
-          {jobs.map((job) => (
+          {filteredJobs.map((job) => (
             <Card key={job.id}>
               <CardContent className="p-5 space-y-3">
                 <h3 className="font-semibold text-lg">{job.title}</h3>
+
                 <p className="text-sm text-gray-600">
                   {job.company} • {job.location}
                 </p>
 
                 <div className="text-sm">
-                  <span>{job.salary}</span> • <span>{job.type}</span>
+                  <span>
+                    ${job.salaryMin} - ${job.salaryMax}
+                  </span>{" "}
+                  • <span>{job.type}</span> •{" "}
+                  <span className="font-medium">{job.status}</span>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
-                  {job.skills.map((skill, index) => (
-                    <span
-                      key={index}
-                      className="bg-gray-100 px-2 py-1 text-xs rounded"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="flex gap-2 pt-3">
+                {/* ACTIONS */}
+                <div className="flex flex-wrap gap-2 pt-3">
                   <Button size="sm" onClick={() => navigate(`/jobs/${job.id}`)}>
-                    View Details
+                    View
                   </Button>
 
                   <Button
@@ -268,6 +343,52 @@ export default function MyJobPosts() {
                   >
                     Edit
                   </Button>
+
+                  {job.status === JobStatus.DRAFT && (
+                    <Button
+                      size="sm"
+                      onClick={() => updateStatus(job.id, JobStatus.PUBLISHED)}
+                    >
+                      Publish
+                    </Button>
+                  )}
+
+                  {job.status === JobStatus.PAUSED && (
+                    <Button
+                      size="sm"
+                      onClick={() => updateStatus(job.id, JobStatus.PUBLISHED)}
+                    >
+                      Resume
+                    </Button>
+                  )}
+
+                  {job.status === JobStatus.PUBLISHED && (
+                    <>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => updateStatus(job.id, JobStatus.PAUSED)}
+                      >
+                        Pause
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => updateStatus(job.id, JobStatus.CLOSED)}
+                      >
+                        Close
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => updateStatus(job.id, JobStatus.FILLED)}
+                      >
+                        Mark Filled
+                      </Button>
+                    </>
+                  )}
 
                   <Button
                     size="sm"
@@ -280,6 +401,12 @@ export default function MyJobPosts() {
               </CardContent>
             </Card>
           ))}
+
+          {filteredJobs.length === 0 && (
+            <div className="text-center text-gray-500 py-10">
+              No jobs in this section
+            </div>
+          )}
         </div>
       </div>
     </div>

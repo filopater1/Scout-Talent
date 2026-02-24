@@ -491,35 +491,6 @@ PUT /api/applicant/profile/basic-info
 
 ---
 
-### Step 3 — Upload CV
-
-#### Required API — Upload CV
-
-```
-POST /api/files/upload-cv
-Content-Type: multipart/form-data
-```
-
-**Response:**
-
-```json
-{
-  "fileId": "cv_123",
-  "fileName": "john_cv.pdf",
-  "url": "..."
-}
-```
-
-**Validation Rules:**
-
-| Rule                  | Details                                                                 |
-| --------------------- | ----------------------------------------------------------------------- |
-| Maximum file size     | **10 MB**                                                         |
-| Allowed formats       | `.pdf`,`.doc`,`.docx`                                             |
-| Response must include | `fileId`— required by the Submit Application step (not just `url`) |
-
----
-
 ### Step 4 — Submit Application *(Critical)*
 
 #### Required API — Submit Application
@@ -533,7 +504,7 @@ POST /api/job-applications
 ```json
 {
   "jobId": 1,
-  "cvFileId": "cv_123",
+  "cvFile": "cv_123",
   "coverLetter": "optional text"
 }
 ```
@@ -686,34 +657,6 @@ GET /api/recruiter/dashboard-stats
 
 ---
 
-## 3. Get Candidate Details
-
-Used when navigating to a candidate's evaluation page.
-
-```
-GET /api/recruiter/candidates/{id}
-```
-
-**Response:**
-
-```json
-{
-  "id": 1,
-  "name": "Alex Johnson",
-  "email": "alex@example.com",
-  "phone": "+1 555 123 4567",
-  "position": "Senior Software Engineer",
-  "aiScore": 95,
-  "skills": ["React", "Node.js"],
-  "experience": [],
-  "education": [],
-  "cvUrl": "https://...",
-  "status": "Interview"
-}
-```
-
----
-
 # Candidate Evaluation
 
 ## Overview
@@ -821,21 +764,8 @@ type CandidateStatus =
 POST /api/recruiter/candidates/{id}/schedule-interview
 ```
 
-**Request Body:**
-
-```json
-{
-  "interviewType": "Technical Interview",
-  "scheduledAt": "2026-02-25T14:00:00Z"
-}
-```
-
-**Response:** `200 OK`
-
 **Expected Backend Behavior:**
 
-* Create an interview record
-* Send a notification email to the candidate
 * Update candidate status to `"Interview Scheduled"`
 
 ---
@@ -862,39 +792,6 @@ POST /api/recruiter/candidates/{id}/reject
 * Update candidate status to `"Rejected"`
 * Store the rejection reason
 * Optionally notify the candidate
-
----
-
-## 4. Schedule Call *(Optional but Recommended)*
-
-```
-POST /api/recruiter/candidates/{id}/schedule-call
-```
-
-**Request Body:**
-
-```json
-{
-  "scheduledAt": "2026-02-23T12:00:00Z",
-  "notes": "Intro call"
-}
-```
-
----
-
-## 5. Send Assessment *(Future-Ready)*
-
-```
-POST /api/recruiter/candidates/{id}/send-assessment
-```
-
-**Request Body:**
-
-```json
-{
-  "assessmentId": "frontend-react-test"
-}
-```
 
 ---
 

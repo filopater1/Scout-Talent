@@ -418,13 +418,13 @@ export default function CandidateEvaluation() {
                   Move to Interview
                 </Button>
 
-                <Button
+                {/* <Button
                   variant="outline"
                   className="w-full"
                   onClick={() => setActionType("call")}
                 >
                   Schedule Call
-                </Button>
+                </Button> */}
 
                 {/* <Button
                   variant="outline"

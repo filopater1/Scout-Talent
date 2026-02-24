@@ -15,6 +15,7 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import MyJobsPage from "./pages/MyJobsPage";
 import RecruiterProfile from "./pages/RecruiterProfile";
+import HRInterviewDashboard from "./pages/HRInterviewDashboard";
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/jobs/:jobId" element={<JobDetails />} />
           <Route path="/applicant/profile" element={<ApplicantProfile />} />
           <Route path="/recruiter/profile" element={<RecruiterProfile />} />
+          <Route path="/hr/interviews" element={<HRInterviewDashboard />} />
           <Route
             path="/evaluate/:candidateId"
             element={<CandidateEvaluation />}

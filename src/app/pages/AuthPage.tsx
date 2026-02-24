@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -20,9 +20,13 @@ import { BrainCircuit, User, Briefcase, Building2 } from "lucide-react";
 
 export default function AuthPage() {
   const navigate = useNavigate();
+
   const [selectedRole, setSelectedRole] = useState<
     "applicant" | "recruiter" | "hr"
   >("applicant");
+
+  const [companyMode, setCompanyMode] = useState<"create" | "join">("create");
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -31,11 +35,21 @@ export default function AuthPage() {
     phone: "",
     role: "applicant",
     jobTitle: "",
-    yearsOfExperience: "",
     location: "",
     linkedinUrl: "",
     companyName: "",
+    inviteCode: "",
   });
+
+  /* ==============================
+     Sync role with formData
+  ============================== */
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      role: selectedRole,
+    }));
+  }, [selectedRole]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -44,16 +58,52 @@ export default function AuthPage() {
     });
   };
 
+  /* ==============================
+     LOGIN (Mock until backend)
+  ============================== */
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Redirect based on role
-    if (selectedRole === "applicant") {
+
+    // 🔥 بعدين استبدل ده بالرد من السيرفر
+    const userRole = selectedRole;
+
+    if (userRole === "applicant") {
       navigate("/applicant");
-    } else if (selectedRole === "recruiter") {
+    } else if (userRole === "recruiter") {
       navigate("/recruiter");
     } else {
       navigate("/analytics");
     }
+  };
+
+  /* ==============================
+     SIGNUP
+  ============================== */
+  const handleSignup = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    // 🔥 ده ال payload اللي هيتبعت للباك بعدين
+    const payload = {
+      ...formData,
+      companyName:
+        selectedRole === "recruiter" && companyMode === "create"
+          ? formData.companyName
+          : undefined,
+      inviteCode:
+        selectedRole === "hr" ||
+        (selectedRole === "recruiter" && companyMode === "join")
+          ? formData.inviteCode
+          : undefined,
+    };
+
+    console.log("Signup Payload:", payload);
+
+    navigate("/login");
   };
 
   return (
@@ -72,11 +122,10 @@ export default function AuthPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Welcome Back</CardTitle>
-            <CardDescription>
-              Sign in to your account to continue
-            </CardDescription>
+            <CardTitle>Welcome</CardTitle>
+            <CardDescription>Login or create your account</CardDescription>
           </CardHeader>
+
           <CardContent>
             <Tabs defaultValue="login" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
@@ -84,274 +133,184 @@ export default function AuthPage() {
                 <TabsTrigger value="signup">Sign Up</TabsTrigger>
               </TabsList>
 
+              {/* ================= LOGIN ================= */}
               <TabsContent value="login" className="space-y-4 mt-4">
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      defaultValue="demo@scouttalent.ai"
-                    />
+                    <Label>Email</Label>
+                    <Input type="email" placeholder="you@example.com" />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      placeholder="••••••••"
-                      defaultValue="demo123"
-                    />
+                    <Label>Password</Label>
+                    <Input type="password" placeholder="••••••••" />
                   </div>
 
                   <div className="space-y-2">
                     <Label>Select Your Role</Label>
                     <div className="grid grid-cols-3 gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedRole("applicant")}
-                        className={`p-3 border rounded-lg flex flex-col items-center gap-2 transition-all ${
-                          selectedRole === "applicant"
-                            ? "border-indigo-600 bg-indigo-50"
-                            : "border-gray-200 hover:border-gray-300"
-                        }`}
-                      >
-                        <User
-                          className={`w-5 h-5 ${selectedRole === "applicant" ? "text-indigo-600" : "text-gray-600"}`}
-                        />
-                        <span
-                          className={`text-xs font-medium ${selectedRole === "applicant" ? "text-indigo-600" : "text-gray-600"}`}
+                      {["applicant", "recruiter", "hr"].map((role) => (
+                        <button
+                          key={role}
+                          type="button"
+                          onClick={() =>
+                            setSelectedRole(
+                              role as "applicant" | "recruiter" | "hr",
+                            )
+                          }
+                          className={`p-3 border rounded-lg flex flex-col items-center gap-2 transition-all ${
+                            selectedRole === role
+                              ? "border-indigo-600 bg-indigo-50"
+                              : "border-gray-200 hover:border-gray-300"
+                          }`}
                         >
-                          Applicant
-                        </span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => setSelectedRole("recruiter")}
-                        className={`p-3 border rounded-lg flex flex-col items-center gap-2 transition-all ${
-                          selectedRole === "recruiter"
-                            ? "border-indigo-600 bg-indigo-50"
-                            : "border-gray-200 hover:border-gray-300"
-                        }`}
-                      >
-                        <Briefcase
-                          className={`w-5 h-5 ${selectedRole === "recruiter" ? "text-indigo-600" : "text-gray-600"}`}
-                        />
-                        <span
-                          className={`text-xs font-medium ${selectedRole === "recruiter" ? "text-indigo-600" : "text-gray-600"}`}
-                        >
-                          Recruiter
-                        </span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => setSelectedRole("hr")}
-                        className={`p-3 border rounded-lg flex flex-col items-center gap-2 transition-all ${
-                          selectedRole === "hr"
-                            ? "border-indigo-600 bg-indigo-50"
-                            : "border-gray-200 hover:border-gray-300"
-                        }`}
-                      >
-                        <Building2
-                          className={`w-5 h-5 ${selectedRole === "hr" ? "text-indigo-600" : "text-gray-600"}`}
-                        />
-                        <span
-                          className={`text-xs font-medium ${selectedRole === "hr" ? "text-indigo-600" : "text-gray-600"}`}
-                        >
-                          HR
-                        </span>
-                      </button>
+                          {role === "applicant" && <User />}
+                          {role === "recruiter" && <Briefcase />}
+                          {role === "hr" && <Building2 />}
+                          <span className="text-xs font-medium capitalize">
+                            {role}
+                          </span>
+                        </button>
+                      ))}
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <input
-                        id="remember"
-                        type="checkbox"
-                        className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-                      />
-                      <Label
-                        htmlFor="remember"
-                        className="text-sm text-gray-600"
-                      >
-                        Remember me
-                      </Label>
-                    </div>
-
-                    <Link
-                      to="/forgot-password"
-                      className="text-sm text-indigo-600 hover:underline"
-                    >
-                      Forgot your password?
-                    </Link>
-                  </div>
                   <Button type="submit" className="w-full">
                     Sign In
                   </Button>
                 </form>
               </TabsContent>
 
+              {/* ================= SIGNUP ================= */}
               <TabsContent value="signup" className="space-y-4 mt-4">
-                <form onSubmit={handleLogin} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name</Label>
-                    <Input
-                      id="signup-name"
-                      type="text"
-                      name="fullName"
-                      onChange={handleChange}
+                <form onSubmit={handleSignup} className="space-y-4">
+                  <Input
+                    name="fullName"
+                    placeholder="Full Name"
+                    onChange={handleChange}
+                  />
 
-                      placeholder="John Doe"
-                    />
-                  </div>
+                  <Input
+                    name="email"
+                    type="email"
+                    placeholder="Email"
+                    onChange={handleChange}
+                  />
 
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      name="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Phone</Label>
-                    <Input
-                      name="phone"
-                      placeholder="+20 10 1234 5678"
-                      onChange={handleChange}
-                    />
-                  </div>
+                  <Input
+                    name="phone"
+                    placeholder="Phone"
+                    onChange={handleChange}
+                  />
 
-                      <div className="space-y-2">
-                        <Label htmlFor="jobTitle">Job Title</Label>
-                        <Input
-                          id="jobTitle"
-                          name="jobTitle"
-                          placeholder="Frontend Developer"
-                          onChange={handleChange}
-                        />
-                      </div>
+                  <Input
+                    name="jobTitle"
+                    placeholder="Job Title"
+                    onChange={handleChange}
+                  />
 
-                      <div className="space-y-2">
-                        <Label htmlFor="location">Location</Label>
-                        <Input
-                          id="location"
-                          name="location"
-                          placeholder="Cairo, Egypt"
-                          onChange={handleChange}
-                        />
-                      </div>
+                  <Input
+                    name="location"
+                    placeholder="Location"
+                    onChange={handleChange}
+                  />
+
                   {selectedRole === "applicant" && (
-                    <>
+                    <Input
+                      name="linkedinUrl"
+                      placeholder="LinkedIn URL"
+                      onChange={handleChange}
+                    />
+                  )}
 
-                      <div className="space-y-2">
-                        <Label htmlFor="linkedinUrl">LinkedIn Profile</Label>
+                  {/* Recruiter Company Logic */}
+                  {selectedRole === "recruiter" && (
+                    <div className="space-y-3">
+                      <Label>Company Setup</Label>
+
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant={
+                            companyMode === "create" ? "default" : "outline"
+                          }
+                          onClick={() => setCompanyMode("create")}
+                        >
+                          Create
+                        </Button>
+
+                        <Button
+                          type="button"
+                          variant={
+                            companyMode === "join" ? "default" : "outline"
+                          }
+                          onClick={() => setCompanyMode("join")}
+                        >
+                          Join
+                        </Button>
+                      </div>
+
+                      {companyMode === "create" ? (
                         <Input
-                          id="linkedinUrl"
-                          name="linkedinUrl"
-                          placeholder="https://linkedin.com/in/username"
+                          name="companyName"
+                          placeholder="Company Name"
                           onChange={handleChange}
                         />
-                      </div>
-                    </>
-                  )}
-                  {(selectedRole === "recruiter" || selectedRole === "hr") && (
-                    <div className="space-y-2">
-                      <Label htmlFor="companyName">Company Name</Label>
-                      <Input
-                        name="companyName"
-                        placeholder="Company Name"
-                        onChange={handleChange}
-                      />
+                      ) : (
+                        <Input
+                          name="inviteCode"
+                          placeholder="Company Invite Code"
+                          onChange={handleChange}
+                        />
+                      )}
                     </div>
                   )}
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <Input
-                      id="signup-password"
-                      type="password"
-                      name="password"
-                      onChange={handleChange}
-                      placeholder="••••••••"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Confirm Password</Label>
-                    <Input
-                      type="password"
-                      name="confirmPassword"
 
-                      placeholder="••••••••"
+                  {/* HR Join Only */}
+                  {selectedRole === "hr" && (
+                    <Input
+                      name="inviteCode"
+                      placeholder="Company Invite Code"
                       onChange={handleChange}
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>I am a...</Label>
-                    <div className="grid grid-cols-3 gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedRole("applicant")}
-                        className={`p-3 border rounded-lg flex flex-col items-center gap-2 transition-all ${
-                          selectedRole === "applicant"
-                            ? "border-indigo-600 bg-indigo-50"
-                            : "border-gray-200 hover:border-gray-300"
-                        }`}
-                      >
-                        <User
-                          className={`w-5 h-5 ${selectedRole === "applicant" ? "text-indigo-600" : "text-gray-600"}`}
-                        />
-                        <span
-                          className={`text-xs font-medium ${selectedRole === "applicant" ? "text-indigo-600" : "text-gray-600"}`}
-                        >
-                          Applicant
-                        </span>
-                      </button>
+                  )}
 
-                      <button
-                        type="button"
-                        onClick={() => setSelectedRole("recruiter")}
-                        className={`p-3 border rounded-lg flex flex-col items-center gap-2 transition-all ${
-                          selectedRole === "recruiter"
-                            ? "border-indigo-600 bg-indigo-50"
-                            : "border-gray-200 hover:border-gray-300"
-                        }`}
-                      >
-                        <Briefcase
-                          className={`w-5 h-5 ${selectedRole === "recruiter" ? "text-indigo-600" : "text-gray-600"}`}
-                        />
-                        <span
-                          className={`text-xs font-medium ${selectedRole === "recruiter" ? "text-indigo-600" : "text-gray-600"}`}
-                        >
-                          Recruiter
-                        </span>
-                      </button>
+                  <Input
+                    name="password"
+                    type="password"
+                    placeholder="Password"
+                    onChange={handleChange}
+                  />
 
+                  <Input
+                    name="confirmPassword"
+                    type="password"
+                    placeholder="Confirm Password"
+                    onChange={handleChange}
+                  />
+
+                  {/* Role Selector */}
+                  <div className="grid grid-cols-3 gap-2">
+                    {["applicant", "recruiter", "hr"].map((role) => (
                       <button
+                        key={role}
                         type="button"
-                        onClick={() => setSelectedRole("hr")}
-                        className={`p-3 border rounded-lg flex flex-col items-center gap-2 transition-all ${
-                          selectedRole === "hr"
+                        onClick={() =>
+                          setSelectedRole(
+                            role as "applicant" | "recruiter" | "hr",
+                          )
+                        }
+                        className={`p-3 border rounded-lg ${
+                          selectedRole === role
                             ? "border-indigo-600 bg-indigo-50"
-                            : "border-gray-200 hover:border-gray-300"
+                            : "border-gray-200"
                         }`}
                       >
-                        <Building2
-                          className={`w-5 h-5 ${selectedRole === "hr" ? "text-indigo-600" : "text-gray-600"}`}
-                        />
-                        <span
-                          className={`text-xs font-medium ${selectedRole === "hr" ? "text-indigo-600" : "text-gray-600"}`}
-                        >
-                          HR
+                        <span className="text-xs font-medium capitalize">
+                          {role}
                         </span>
                       </button>
-                    </div>
+                    ))}
                   </div>
 
                   <Button type="submit" className="w-full">
