@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -16,15 +16,14 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { BrainCircuit, User, Briefcase, Building2 } from "lucide-react";
+import { BrainCircuit, User, Building2 } from "lucide-react";
+
+type Role = "applicant" | "company";
 
 export default function AuthPage() {
   const navigate = useNavigate();
 
-  const [selectedRole, setSelectedRole] = useState<
-    "applicant" | "recruiter" | "hr"
-  >("applicant");
-
+  const [selectedRole, setSelectedRole] = useState<Role>("applicant");
   const [companyMode, setCompanyMode] = useState<"create" | "join">("create");
 
   const [formData, setFormData] = useState({
@@ -42,7 +41,7 @@ export default function AuthPage() {
   });
 
   /* ==============================
-     Sync role with formData
+     Sync role
   ============================== */
   useEffect(() => {
     setFormData((prev) => ({
@@ -59,20 +58,15 @@ export default function AuthPage() {
   };
 
   /* ==============================
-     LOGIN (Mock until backend)
+     LOGIN (mock)
   ============================== */
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 🔥 بعدين استبدل ده بالرد من السيرفر
-    const userRole = selectedRole;
-
-    if (userRole === "applicant") {
+    if (selectedRole === "applicant") {
       navigate("/applicant");
-    } else if (userRole === "recruiter") {
-      navigate("/recruiter");
     } else {
-      navigate("/analytics");
+      navigate("/company");
     }
   };
 
@@ -87,16 +81,14 @@ export default function AuthPage() {
       return;
     }
 
-    // 🔥 ده ال payload اللي هيتبعت للباك بعدين
     const payload = {
       ...formData,
       companyName:
-        selectedRole === "recruiter" && companyMode === "create"
+        selectedRole === "company" && companyMode === "create"
           ? formData.companyName
           : undefined,
       inviteCode:
-        selectedRole === "hr" ||
-        (selectedRole === "recruiter" && companyMode === "join")
+        selectedRole === "company" && companyMode === "join"
           ? formData.inviteCode
           : undefined,
     };
@@ -146,18 +138,15 @@ export default function AuthPage() {
                     <Input type="password" placeholder="••••••••" />
                   </div>
 
+                  {/* Role selector */}
                   <div className="space-y-2">
                     <Label>Select Your Role</Label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {["applicant", "recruiter", "hr"].map((role) => (
+                    <div className="grid grid-cols-2 gap-2">
+                      {(["applicant", "company"] as Role[]).map((role) => (
                         <button
                           key={role}
                           type="button"
-                          onClick={() =>
-                            setSelectedRole(
-                              role as "applicant" | "recruiter" | "hr",
-                            )
-                          }
+                          onClick={() => setSelectedRole(role)}
                           className={`p-3 border rounded-lg flex flex-col items-center gap-2 transition-all ${
                             selectedRole === role
                               ? "border-indigo-600 bg-indigo-50"
@@ -165,8 +154,7 @@ export default function AuthPage() {
                           }`}
                         >
                           {role === "applicant" && <User />}
-                          {role === "recruiter" && <Briefcase />}
-                          {role === "hr" && <Building2 />}
+                          {role === "company" && <Building2 />}
                           <span className="text-xs font-medium capitalize">
                             {role}
                           </span>
@@ -189,32 +177,29 @@ export default function AuthPage() {
                     placeholder="Full Name"
                     onChange={handleChange}
                   />
-
                   <Input
                     name="email"
                     type="email"
                     placeholder="Email"
                     onChange={handleChange}
                   />
-
                   <Input
                     name="phone"
                     placeholder="Phone"
                     onChange={handleChange}
                   />
-
                   <Input
                     name="jobTitle"
                     placeholder="Job Title"
                     onChange={handleChange}
                   />
-
                   <Input
                     name="location"
                     placeholder="Location"
                     onChange={handleChange}
                   />
 
+                  {/* Applicant only */}
                   {selectedRole === "applicant" && (
                     <Input
                       name="linkedinUrl"
@@ -223,8 +208,15 @@ export default function AuthPage() {
                     />
                   )}
 
-                  {/* Recruiter Company Logic */}
-                  {selectedRole === "recruiter" && (
+                  {selectedRole === "company" && (
+                    <Input
+                      name="companyName"
+                      placeholder="Company Name"
+                      onChange={handleChange}
+                    />
+                  )}
+                  {/* Company only */}
+                  {/* {selectedRole === "company" && (
                     <div className="space-y-3">
                       <Label>Company Setup</Label>
 
@@ -264,16 +256,7 @@ export default function AuthPage() {
                         />
                       )}
                     </div>
-                  )}
-
-                  {/* HR Join Only */}
-                  {selectedRole === "hr" && (
-                    <Input
-                      name="inviteCode"
-                      placeholder="Company Invite Code"
-                      onChange={handleChange}
-                    />
-                  )}
+                  )} */}
 
                   <Input
                     name="password"
@@ -289,17 +272,13 @@ export default function AuthPage() {
                     onChange={handleChange}
                   />
 
-                  {/* Role Selector */}
-                  <div className="grid grid-cols-3 gap-2">
-                    {["applicant", "recruiter", "hr"].map((role) => (
+                  {/* Role selector */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {(["applicant", "company"] as Role[]).map((role) => (
                       <button
                         key={role}
                         type="button"
-                        onClick={() =>
-                          setSelectedRole(
-                            role as "applicant" | "recruiter" | "hr",
-                          )
-                        }
+                        onClick={() => setSelectedRole(role)}
                         className={`p-3 border rounded-lg ${
                           selectedRole === role
                             ? "border-indigo-600 bg-indigo-50"

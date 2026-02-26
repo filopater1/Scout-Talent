@@ -63,7 +63,7 @@ export default function CandidateEvaluation() {
             <span className="text-2xl font-bold text-gray-900">Hakeem</span>
           </div>
           <div className="flex items-center gap-4">
-            <Button variant="outline" onClick={() => navigate("/recruiter")}>
+            <Button variant="outline" onClick={() => navigate("/company")}>
               Back to Pipeline
             </Button>
             <Button variant="outline" onClick={() => navigate("/")}>

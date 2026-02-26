@@ -89,7 +89,7 @@ export default function RecruiterDashboard() {
             <Button onClick={() => navigate("/my-posts")}>My Job Posts</Button>
 
             <Button
-              onClick={() => navigate("/recruiter/profile")}
+              onClick={() => navigate("/company/profile")}
               variant="outline"
             >
               <User className="w-4 h-4 mr-1" />
@@ -131,7 +131,7 @@ export default function RecruiterDashboard() {
             </Button>
 
             <Button
-              onClick={() => navigate("/recruiter/profile")}
+              onClick={() => navigate("/company/profile")}
               variant="outline"
               className="w-full text-sm flex items-center  cursor-pointer  text-gray-600"
             >

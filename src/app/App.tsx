@@ -30,12 +30,12 @@ export default function App() {
           <Route path="/my-posts" element={<MyJobsPage />} />
 
           <Route path="/applicant" element={<ApplicantDashboard />} />
-          <Route path="/recruiter" element={<RecruiterDashboard />} />
+          <Route path="/company" element={<RecruiterDashboard />} />
           <Route path="/jobs" element={<JobList />} />
           <Route path="/jobs/:jobId/apply" element={<JobApplication />} />
           <Route path="/jobs/:jobId" element={<JobDetails />} />
           <Route path="/applicant/profile" element={<ApplicantProfile />} />
-          <Route path="/recruiter/profile" element={<RecruiterProfile />} />
+          <Route path="/company/profile" element={<RecruiterProfile />} />
           <Route path="/hr/interviews" element={<HRInterviewDashboard />} />
           <Route
             path="/evaluate/:candidateId"

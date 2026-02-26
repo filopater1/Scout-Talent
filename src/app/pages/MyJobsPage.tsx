@@ -156,7 +156,7 @@ export default function MyJobPosts() {
             <span className="text-2xl font-bold text-gray-900">Hakeem</span>
           </div>
 
-          <Button variant="outline" onClick={() => navigate("/recruiter")}>
+          <Button variant="outline" onClick={() => navigate("/company")}>
             Back to Dashboard
           </Button>
         </div>
