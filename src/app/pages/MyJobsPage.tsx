@@ -203,13 +203,13 @@ export default function MyJobPosts() {
                 }
               />
 
-              <Input
+              {/* <Input
                 placeholder="Company"
                 value={formData.company}
                 onChange={(e) =>
                   setFormData({ ...formData, company: e.target.value })
                 }
-              />
+              /> */}
 
               <Input
                 placeholder="Location"
