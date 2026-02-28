@@ -18,13 +18,27 @@ import {
 } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Input } from "../components/ui/input";
+enum JobType {
+  FULL_TIME = "Full_Time",
+  PART_TIME = "Part_Time",
+  CONTRACT = "Contract",
+  FREELANCE = "Freelance",
+  INTERNSHIP = "Internship",
+  TEMPORARY = "Temporary",
+}
+
+enum WorkMode {
+  ONSITE = "Onsite",
+  REMOTE = "Remote",
+  HYBRID = "Hybrid",
+}
 
 export default function JobList() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [jobTypeFilter, setJobTypeFilter] = useState<JobType | "">("");
+  const [workModeFilter, setWorkModeFilter] = useState<WorkMode | "">("");
 
   const jobs = [
     {
@@ -33,25 +47,8 @@ export default function JobList() {
       company: "TechCorp Inc.",
       location: "Remote",
       salary: "$120k - $180k",
-      type: "Full-time",
-      status: "Actively Hiring",
-    },
-    {
-      id: 2,
-      title: "Frontend Engineer",
-      company: "DesignStudio",
-      location: "New York, NY",
-      salary: "$90k - $130k",
-      type: "Full-time",
-      status: "Urgent",
-    },
-    {
-      id: 3,
-      title: "Backend Developer",
-      company: "DataFlow Systems",
-      location: "Austin, TX",
-      salary: "$100k - $150k",
-      type: "Hybrid",
+      jobType: JobType.FULL_TIME,
+      workMode: WorkMode.REMOTE,
       status: "Actively Hiring",
     },
   ];
@@ -65,13 +62,19 @@ export default function JobList() {
       ? job.location.toLowerCase().includes(locationFilter.toLowerCase())
       : true;
 
-    const matchesType = typeFilter ? job.type === typeFilter : true;
+    const matchesJobType = jobTypeFilter ? job.jobType === jobTypeFilter : true;
 
-    const matchesStatus = statusFilter ? job.status === statusFilter : true;
+    const matchesWorkMode = workModeFilter
+      ? job.workMode === workModeFilter
+      : true;
 
-    return matchesSearch && matchesLocation && matchesType && matchesStatus;
+    return (
+      matchesSearch && matchesLocation && matchesJobType && matchesWorkMode
+    );
   });
 
+  const formatEnum = (value: string) =>
+  value.replace("_", " ");
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -112,7 +115,7 @@ export default function JobList() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div className="grid md:grid-cols-3 gap-3 mb-8">
+        <div className="grid md:grid-cols-4 gap-3 mb-8">
           {/* Location */}
           <Input
             placeholder="Filter by location"
@@ -123,25 +126,30 @@ export default function JobList() {
           {/* Job Type */}
           <select
             className="border rounded-md px-3 py-2 text-sm bg-white"
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
+            value={jobTypeFilter}
+            onChange={(e) => setJobTypeFilter(e.target.value as JobType | "")}
           >
-            <option value="">All Types</option>
-            <option value="Full-time">Full-time</option>
-            <option value="Hybrid">Hybrid</option>
-            <option value="Remote">Remote</option>
+            <option value="">All Job Types</option>
+            {Object.values(JobType).map((type) => (
+              <option key={type} value={type}>
+                {type.replace("_", " ")}
+              </option>
+            ))}
           </select>
 
-          {/* Status */}
-          {/* <select
+          {/* Work Mode */}
+          <select
             className="border rounded-md px-3 py-2 text-sm bg-white"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            value={workModeFilter}
+            onChange={(e) => setWorkModeFilter(e.target.value as WorkMode | "")}
           >
-            <option value="">All Status</option>
-            <option value="Actively Hiring">Actively Hiring</option>
-            <option value="Urgent">Urgent</option>
-          </select> */}
+            <option value="">All Work Modes</option>
+            {Object.values(WorkMode).map((mode) => (
+              <option key={mode} value={mode}>
+                {mode}
+              </option>
+            ))}
+          </select>
 
           {/* Clear */}
           <Button
@@ -149,8 +157,8 @@ export default function JobList() {
             onClick={() => {
               setSearch("");
               setLocationFilter("");
-              setTypeFilter("");
-              setStatusFilter("");
+              setJobTypeFilter("");
+              setWorkModeFilter("");
             }}
           >
             Clear Filters
@@ -178,7 +186,7 @@ export default function JobList() {
                       </div>
                     </div>
                   </div>
-{/* 
+                  {/* 
                   <Badge className="bg-green-100 text-green-800">
                     {job.status}
                   </Badge> */}
@@ -194,7 +202,7 @@ export default function JobList() {
 
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
-                    <span>{job.type}</span>
+                   <span>{formatEnum(job.jobType)}</span>
                   </div>
                 </div>
 
