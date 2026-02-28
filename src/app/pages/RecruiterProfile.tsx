@@ -35,6 +35,7 @@ export default function RecruiterProfile() {
     phone: "+1 (555) 123-4567",
     location: "San Francisco, CA",
     joined: "March 2022",
+    linkedin: "https://www.linkedin.com/in/sarah-chen/",
     bio: "Experienced recruiter specializing in AI, backend engineering, and scalable systems hiring.",
     specializations: [
       "Frontend Engineers",
@@ -45,6 +46,18 @@ export default function RecruiterProfile() {
   };
 
   const [formData, setFormData] = useState(recruiterData);
+  const profileCompletionData = {
+    personalInfo: 80,
+    about: 60,
+    specializations: 75,
+  };
+  const calculateOverall = () => {
+    const values = Object.values(profileCompletionData);
+    const total = values.reduce((acc, val) => acc + val, 0);
+    return Math.round(total / values.length);
+  };
+
+  const completion = calculateOverall();
 
   // ================= handlers =================
   const handleChange = (field: string, value: string) => {
@@ -89,7 +102,39 @@ export default function RecruiterProfile() {
       </header>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+        <Card className="rounded-xl shadow-sm">
+          <CardContent className="p-6 space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="font-semibold text-lg">Profile Completion</h3>
+              <span className="text-sm font-bold text-indigo-600">
+                {completion}%
+              </span>
+            </div>
+
+            <div className="w-full bg-gray-200 rounded-full h-3">
+              <div
+                className="bg-indigo-600 h-3 rounded-full transition-all duration-500"
+                style={{ width: `${completion}%` }}
+              />
+            </div>
+            {/* <div className="space-y-3 pt-2">
+              <SectionProgress
+                label="Personal Info"
+                value={profileCompletionData.personalInfo}
+              />
+              <SectionProgress
+                label="About"
+                value={profileCompletionData.about}
+              />
+              <SectionProgress
+                label="Specializations"
+                value={profileCompletionData.specializations}
+              />
+            </div> */}
+          </CardContent>
+        </Card>
         {/* ================= PERSONAL INFO ================= */}
+
         <Card className="rounded-xl shadow-sm">
           <CardContent className="p-6">
             <div className="flex justify-between mb-4">
@@ -137,9 +182,9 @@ export default function RecruiterProfile() {
                       placeholder="Title"
                     />
                     <Input
-                      value={formData.company}
-                      onChange={(e) => handleChange("company", e.target.value)}
-                      placeholder="Company"
+                      value={formData.linkedin}
+                      onChange={(e) => handleChange("linkedin", e.target.value)}
+                      placeholder="linkedIn URL"
                     />
                     <Input
                       value={formData.email}
@@ -161,7 +206,7 @@ export default function RecruiterProfile() {
                   <>
                     <h2 className="text-2xl font-bold">{formData.name}</h2>
                     <p className="text-gray-600">{formData.title}</p>
-                    <p className="text-gray-500">{formData.company}</p>
+                    <p className="text-gray-500">{formData.linkedin}</p>
 
                     <div className="flex flex-wrap gap-4 text-sm text-gray-500">
                       <span className="flex items-center gap-1">
@@ -288,3 +333,24 @@ export default function RecruiterProfile() {
     </div>
   );
 }
+
+// const SectionProgress = ({
+//   label,
+//   value,
+// }: {
+//   label: string;
+//   value: number;
+// }) => (
+//   <div className="space-y-1">
+//     <div className="flex justify-between text-xs text-gray-600">
+//       <span>{label}</span>
+//       <span>{value}%</span>
+//     </div>
+//     <div className="w-full bg-gray-200 rounded-full h-2">
+//       <div
+//         className="bg-indigo-500 h-2 rounded-full"
+//         style={{ width: `${value}%` }}
+//       />
+//     </div>
+//   </div>
+// );

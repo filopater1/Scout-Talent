@@ -43,7 +43,7 @@ export default function ApplicantDashboard() {
               <User className="w-4 h-4 mr-1" />
               Profile
             </span>
-            <Button variant="outline"  onClick={() => navigate("/")}>
+            <Button variant="outline" onClick={() => navigate("/")}>
               Logout
             </Button>
           </div>
@@ -94,6 +94,10 @@ export default function ApplicantDashboard() {
         </Card>
 
         {/* Stats Grid */}
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-semibold">Statistics</h3>
+          <span className="text-xs text-gray-500">Last 3 months</span>
+        </div>
         <div className="grid md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardContent className="pt-6">
@@ -199,7 +203,7 @@ export default function ApplicantDashboard() {
           <CardHeader>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="flex-1">
-                <CardTitle className="mb-2" >My Applications</CardTitle>
+                <CardTitle className="mb-2">My Applications</CardTitle>
                 <CardDescription>
                   Track the status of your job applications
                 </CardDescription>
@@ -269,7 +273,11 @@ export default function ApplicantDashboard() {
                       View Details
                     </Button>
                     {app.status === "Interview" && (
-                      <Button size="sm" className="bg-green-500 hover:bg-green-600 text-white cursor-pointer" variant="default">
+                      <Button
+                        size="sm"
+                        className="bg-green-500 hover:bg-green-600 text-white cursor-pointer"
+                        variant="default"
+                      >
                         Join Interview
                       </Button>
                     )}

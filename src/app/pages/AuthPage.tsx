@@ -174,7 +174,11 @@ export default function AuthPage() {
                 <form onSubmit={handleSignup} className="space-y-4">
                   <Input
                     name="fullName"
-                    placeholder="Full Name"
+                    placeholder={
+                      selectedRole === "applicant"
+                        ? "Full Name"
+                        : "Company Name"
+                    }
                     onChange={handleChange}
                   />
                   <Input
@@ -200,21 +204,20 @@ export default function AuthPage() {
                   />
 
                   {/* Applicant only */}
-                  {selectedRole === "applicant" && (
-                    <Input
-                      name="linkedinUrl"
-                      placeholder="LinkedIn URL"
-                      onChange={handleChange}
-                    />
-                  )}
 
-                  {selectedRole === "company" && (
+                  <Input
+                    name="linkedinUrl"
+                    placeholder="LinkedIn URL"
+                    onChange={handleChange}
+                  />
+
+                  {/* {selectedRole === "company" && (
                     <Input
                       name="companyName"
                       placeholder="Company Name"
                       onChange={handleChange}
                     />
-                  )}
+                  )} */}
                   {/* Company only */}
                   {/* {selectedRole === "company" && (
                     <div className="space-y-3">

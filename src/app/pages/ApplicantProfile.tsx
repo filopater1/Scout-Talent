@@ -211,7 +211,10 @@ export default function ApplicantProfile() {
           </CardHeader>
           <CardContent className="grid md:grid-cols-2 gap-4">
             <Input defaultValue="John" disabled={!isEditing} />
-            <Input defaultValue="Doe" disabled={!isEditing} />
+            <Input
+              defaultValue="Senior Software Engineer"
+              disabled={!isEditing}
+            />
             <Input defaultValue="john.doe@email.com" disabled={!isEditing} />
             <Input defaultValue="+1 555 123 4567" disabled={!isEditing} />
             <Input defaultValue="San Francisco, CA" disabled={!isEditing} />
@@ -322,31 +325,29 @@ export default function ApplicantProfile() {
                   className="flex items-center gap-1 bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm"
                 >
                   {skill}
-                
-                    <button onClick={() => removeSkill(skill)}>
-                      <X className="w-3 h-3 cursor-pointer" />
-                    </button>
-                
+
+                  <button onClick={() => removeSkill(skill)}>
+                    <X className="w-3 h-3 cursor-pointer" />
+                  </button>
                 </div>
               ))}
             </div>
 
             {/* Add Skill */}
-           
-              <div className="flex gap-2">
-                <input
-                  value={newSkill}
-                  onChange={(e) => setNewSkill(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && addSkill()}
-                  placeholder="Add a skill..."
-                  className="flex-1 border rounded-md px-3 py-2 text-sm"
-                />
 
-                <Button onClick={addSkill} size="sm">
-                  Add
-                </Button>
-              </div>
-        
+            <div className="flex gap-2">
+              <input
+                value={newSkill}
+                onChange={(e) => setNewSkill(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && addSkill()}
+                placeholder="Add a skill..."
+                className="flex-1 border rounded-md px-3 py-2 text-sm"
+              />
+
+              <Button onClick={addSkill} size="sm">
+                Add
+              </Button>
+            </div>
           </CardContent>
         </Card>
 

@@ -158,6 +158,10 @@ export default function RecruiterDashboard() {
           </h1>
 
           {/* KPI Cards */}
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-semibold">Statistics</h3>
+            <span className="text-xs text-gray-500">Last 3 months</span>
+          </div>
           <div className="grid md:grid-cols-5 gap-4 mb-6">
             <Card>
               <CardContent className="pt-6">

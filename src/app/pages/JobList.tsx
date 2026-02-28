@@ -22,6 +22,9 @@ import { Input } from "../components/ui/input";
 export default function JobList() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const [locationFilter, setLocationFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
 
   const jobs = [
     {
@@ -53,11 +56,21 @@ export default function JobList() {
     },
   ];
 
-  const filteredJobs = jobs.filter(
-    (job) =>
+  const filteredJobs = jobs.filter((job) => {
+    const matchesSearch =
       job.title.toLowerCase().includes(search.toLowerCase()) ||
-      job.company.toLowerCase().includes(search.toLowerCase()),
-  );
+      job.company.toLowerCase().includes(search.toLowerCase());
+
+    const matchesLocation = locationFilter
+      ? job.location.toLowerCase().includes(locationFilter.toLowerCase())
+      : true;
+
+    const matchesType = typeFilter ? job.type === typeFilter : true;
+
+    const matchesStatus = statusFilter ? job.status === statusFilter : true;
+
+    return matchesSearch && matchesLocation && matchesType && matchesStatus;
+  });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -68,9 +81,7 @@ export default function JobList() {
             <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
               <BrainCircuit className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-bold text-gray-900">
-              Hakeem
-            </span>
+            <span className="text-2xl font-bold text-gray-900">Hakeem</span>
           </div>
 
           <Button variant="outline" onClick={() => navigate("/applicant")}>
@@ -101,6 +112,50 @@ export default function JobList() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
+        <div className="grid md:grid-cols-3 gap-3 mb-8">
+          {/* Location */}
+          <Input
+            placeholder="Filter by location"
+            value={locationFilter}
+            onChange={(e) => setLocationFilter(e.target.value)}
+          />
+
+          {/* Job Type */}
+          <select
+            className="border rounded-md px-3 py-2 text-sm bg-white"
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+          >
+            <option value="">All Types</option>
+            <option value="Full-time">Full-time</option>
+            <option value="Hybrid">Hybrid</option>
+            <option value="Remote">Remote</option>
+          </select>
+
+          {/* Status */}
+          {/* <select
+            className="border rounded-md px-3 py-2 text-sm bg-white"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="">All Status</option>
+            <option value="Actively Hiring">Actively Hiring</option>
+            <option value="Urgent">Urgent</option>
+          </select> */}
+
+          {/* Clear */}
+          <Button
+            variant="outline"
+            onClick={() => {
+              setSearch("");
+              setLocationFilter("");
+              setTypeFilter("");
+              setStatusFilter("");
+            }}
+          >
+            Clear Filters
+          </Button>
+        </div>
 
         {/* Job Cards */}
         <div className="grid md:grid-cols-1 gap-6">
@@ -123,10 +178,10 @@ export default function JobList() {
                       </div>
                     </div>
                   </div>
-
+{/* 
                   <Badge className="bg-green-100 text-green-800">
                     {job.status}
-                  </Badge>
+                  </Badge> */}
                 </div>
               </CardHeader>
 
